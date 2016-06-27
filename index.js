@@ -1,6 +1,15 @@
 var app = require('http').createServer(handler);
+
+//var github = require('octonode');
+
 var statusCode = 200;
-app.listen(9000);
+
+
+app.listen(9000, function() {
+  console.log('Node app is running on port', 9000);
+});
+
+
 
 function handler (req, res) {
   var data = '';
@@ -16,6 +25,3 @@ function handler (req, res) {
   res.writeHead(statusCode, {'Content-Type': 'text/plain'});
   res.end();
 }
-
-console.log("Listening to port 9000");
-console.log("Returning status code " + statusCode.toString());
