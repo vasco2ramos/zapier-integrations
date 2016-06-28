@@ -32,7 +32,7 @@ app.post('/close', function(req, res){
 
     var client = github.client(process.env.GITHUB_KEY);
 
-    console.log(req.body);
+    console.log(req);
     res.send('It is Working!');
     // HACK - not hardcoded please
 /*
