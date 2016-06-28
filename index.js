@@ -32,8 +32,8 @@ app.post('/close', function(req, res){
 
     var client = github.client(process.env.GITHUB_KEY);
 
-    console.log(req);
-
+    console.log(req.body);
+    res.send('It is Working!');
     // HACK - not hardcoded please
 /*
     var ghissue = client.issue('src-d/issues-lead-qualification', 37);
