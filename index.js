@@ -16,19 +16,25 @@ app.get('/testing', function(req, res){
 
     ghissue.update({
         "state": "closed",
-    }, function(){
+    }, function(err, data, headers) {
+        console.log("error: " + err);
+        console.log("data: " + data);
+        console.log("headers:" + headers);
         res.send('It is Working!');
-    });
+        }
+    );
+
 });
 
 
 app.post('/close', function(req, res){
-    var timestamp = req.body.time_ms;
-    var events = req.body.events;
-
 
     var client = github.client(process.env.GITHUB_KEY);
+
+    console.log(req);
+
     // HACK - not hardcoded please
+/*
     var ghissue = client.issue('src-d/issues-lead-qualification', 37);
 
     ghissue.update({
@@ -36,8 +42,7 @@ app.post('/close', function(req, res){
     }, function(){
         res.send('It is Working!');
     });
-
-    console.log(events);
+*/
 
 });
 
