@@ -1,27 +1,12 @@
-var app = require('http').createServer(handler);
+var express = require("express");
+var app = express();
+
 
 //var github = require('octonode');
 
-var statusCode = 200;
 
-
-app.listen(9000, function() {
-  console.log('Node app is running on port', 9000);
+app.get('/', function(req, res){
+  res.send('hello world');
 });
 
-
-
-function handler (req, res) {
-  var data = '';
-  if (req.method == "POST") {
-    req.on('data', function(chunk) {
-      data += chunk;
-    });
-    req.on('end', function() {
-      console.log('Received body data:');
-      console.log(data.toString());
-    });
-  }
-  res.writeHead(statusCode, {'Content-Type': 'text/plain'});
-  res.end();
-}
+app.listen(3000);
