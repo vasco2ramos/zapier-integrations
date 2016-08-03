@@ -1,3 +1,15 @@
+'use strict';
+
+/*
+What you are about to see represents how shity you can build something and it
+still works. I take no responsability for anyone going after this point
+...
+...
+...
+...
+Good Luck
+*/
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const github = require('octonode');
@@ -24,6 +36,8 @@ app.get('/', function(req, res){
   res.send('This app is working');
 });
 
+
+
 app.post('/close', function(req, res){
 
     if(!req.body.number){
@@ -31,8 +45,7 @@ app.post('/close', function(req, res){
         return
     }
 
-    // Close Issue
-    // If this file of webhooks grows put this into a function later
+    // Put this in a separate file
     var client = github.client(process.env.GITHUB_KEY);
     var ghissue = client.issue(process.env.ISSUES_REPO, req.body.number);
 
@@ -50,6 +63,12 @@ app.post('/close', function(req, res){
 
 });
 
+// Issue a new invoice
+app.post('hiveage/new', function(req, res){
+
+
+});
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
-});  
+});
