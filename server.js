@@ -36,8 +36,6 @@ app.get('/', function(req, res){
   res.send('This app is working');
 });
 
-
-
 app.post('/close', function(req, res){
 
     if(!req.body.number){
