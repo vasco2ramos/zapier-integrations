@@ -1,6 +1,6 @@
 var hiveage = require('./integrations/hiveage.js')
 
-app.post('github/close', function(req, res){
+app.post('hiveage/new', function(req, res){
 
     if(!req.body.number){
         console.log(req.body);
