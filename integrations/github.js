@@ -4,7 +4,7 @@ const github = require('octonode');
 
 
 exports.closeIssue = function (id){
-    
+
     var client = github.client(process.env.GITHUB_KEY);
     var ghissue = client.issue(process.env.ISSUES_REPO, id);
 
@@ -16,6 +16,7 @@ exports.closeIssue = function (id){
             res.send(err);
             return
         }
-        res.send(data)
+        res.send(data);
+        return
     });
 }
