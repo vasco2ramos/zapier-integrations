@@ -3,6 +3,7 @@
 const config = require('../config')
 const request = require('request')
 const _ = require('lodash')
+const moment = require('moment')
 
 const headers = {
     "Accept": "application/json"
@@ -30,16 +31,43 @@ var invoiceOptions = {
 // Create them recurringly
 
 
-exports.newInvoice = function (id){
+exports.newInvoice = function (id, price, callback){
   var today = new Date();
   var date = today.toJSON().slice(0,10);
   var statement_no = today.getMonth() + "-" + today.getYear();
-  var due_date = today.setMonth(today.getMonth() + x).toJSON().slice(0,10);
+  // Takes into account the year + month change? (use moment instead?)
+  //var due_date = today.setMonth(today.getMonth() + 1).toJSON().slice(0,10);
 
-  var invoice = {"connection_id": id, "date": date, "statement_no": statement_no, "due_date": due_date};
+  var invoice = {
+      "connection_id": id,
+      "date": date,
+      "statement_no": statement_no,
+      "due_date": date
+    };
+  var expense = {
+      "date": date,
+      "description": "TESTING",
+      "price": "500.00",
+      "sort_order": 1
+  };
 
+  invoiceOptions.form = {"invoice": invoice, "item_attributes": expense};
 
+  request.post(invoiceOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
+
+  function getResponse(error, response, body) {
+    console.log(body);
+    console.log("--------------");
+    console.log(response);
+      if (!error && response.statusCode == 200) {
+        callback("success");
+      } else {
+        callback(error);
+      }
+      return;
+  }
 }
+
 
 exports.newConnection = function (name, email){
   function getResponse(error, response, body) {
@@ -66,10 +94,8 @@ exports.getConnection = function (company, callback){
         if(body["networks"] != undefined){
           var result = findCompany(body["networks"], company);
           if(result.length >0){
-            callback(result[0]["hash_key"]);
-          }/* else{
-            request.get(networkOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
-          }*/
+            callback(result[0]["id"]);
+          }
         } else {
           callback("Not Found");
         }
@@ -78,6 +104,7 @@ exports.getConnection = function (company, callback){
       }
       return;
   }
+
   request.get(networkOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
   return;
 }
