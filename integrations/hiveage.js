@@ -38,27 +38,30 @@ exports.newInvoice = function (id, price, callback){
   // Takes into account the year + month change? (use moment instead?)
   //var due_date = today.setMonth(today.getMonth() + 1).toJSON().slice(0,10);
 
+  var expense = {
+      "date": date,
+      "description": "TESTING",
+      "quantity": 1,
+      "price": price,
+      "sort_order": 1
+  };
+
   var invoice = {
       "connection_id": id,
       "date": date,
       "statement_no": statement_no,
-      "due_date": date
+      "due_date": date,
+      "items_attributes": [expense]
     };
-  var expense = {
-      "date": date,
-      "description": "TESTING",
-      "price": "500.00",
-      "sort_order": 1
-  };
 
-  invoiceOptions.form = {"invoice": invoice, "item_attributes": expense};
+
+  invoiceOptions.form = {"invoice": invoice};
 
   request.post(invoiceOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
 
   function getResponse(error, response, body) {
     console.log(body);
-    console.log("--------------");
-    console.log(response);
+    console.log(response.statusCode);
       if (!error && response.statusCode == 200) {
         callback("success");
       } else {
