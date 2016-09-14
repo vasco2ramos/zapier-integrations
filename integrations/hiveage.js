@@ -21,17 +21,11 @@ var invoiceOptions = {
   json: true,
 }
 
-// Check if company (connection) exxists
-    // If it exists -> create invoice
-// If not
-    // Create connection
-    // Create invoice
-
-// Send slack message mentioning invoices have been created
-// Create them recurringly
-
-
 exports.newInvoice = function (id, price, callback){
+
+  // Move this to a function later so we can keep this one short and sweet.
+  // ----------------
+
   var today = new Date();
   var date = today.toJSON().slice(0,10);
   var statement_no = today.getMonth() + "-" + today.getYear();
@@ -57,59 +51,54 @@ exports.newInvoice = function (id, price, callback){
 
   invoiceOptions.form = {"invoice": invoice};
 
+  // ----------------- until here
+
+
+  var getResponse = generateResponse(callback);
   request.post(invoiceOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
 
-  function getResponse(error, response, body) {
-    console.log(body);
-    console.log(response.statusCode);
-      if (!error && response.statusCode == 200) {
-        callback("success");
-      } else {
-        callback(error);
-      }
-      return;
-  }
 }
 
 
-exports.newConnection = function (name, email){
-  function getResponse(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body);
-        if(body["networks"] != undefined){
-          // Return Hash Key
-        } else {
-          callback("Not Found");
-        }
-      } else {
-        callback(error);
-      }
-      return;
-  }
+exports.newConnection = function (name, email, callback){
+  var connection = buildConnection(name, email);
+  var getResponse = generateResponse(callback);
+
   request.post(networkOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
   return;
 }
 
-// Returns a hash of the connection or -1 in case it is not found.
+// Returns the id of the connection or -1 in case it is not found.
+// CONSIDERATION: Maybe should change this to return the complete connection
 exports.getConnection = function (company, callback){
-  function getResponse(error, response, body) {
+
+  function checkConnections(body) {
+    if(body["networks"] != undefined){
+      var result = findCompany(body["networks"], company);
+      if(result.length >0){
+        callback(result[0]["id"]);
+      }
+    } else {
+      callback(body);
+    }
+  }
+
+  var getResponse = generateResponse(checkConnections);
+  request.get(networkOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
+  return;
+}
+
+
+// Lambda Function for ease of getting response.
+function generateResponse(callback){
+  return function (error, response, body) {
       if (!error && response.statusCode == 200) {
-        if(body["networks"] != undefined){
-          var result = findCompany(body["networks"], company);
-          if(result.length >0){
-            callback(result[0]["id"]);
-          }
-        } else {
-          callback("Not Found");
-        }
+        callback(body);
       } else {
         callback(error);
       }
       return;
   }
-
-  request.get(networkOptions, getResponse).auth(config('HIVEAGE_TOKEN'),"",true);
-  return;
 }
 
 function findCompany(array, company){
