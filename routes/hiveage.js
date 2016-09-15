@@ -1,14 +1,16 @@
-var hiveage = require('../integrations/hiveage.js')
+var invoices = require('../middleware/invoices.js')
 
 
 
 module.exports = function(app){
   app.get('/hiveage', function(req, res){
-      hiveage.getConnection("Sourced", console.log);
+    res.send('Yeah this route definitely exists!');
+      //hiveage.getConnection("Sourced", console.log);
   });
 
   app.get('/hiveage/newinvoice', function(req, res){
-      hiveage.newInvoice(744934, 500, console.log);
+    console.log(req);
+    //hiveage.startInvoices(req);
   });
 
 }
