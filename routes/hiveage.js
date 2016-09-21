@@ -10,7 +10,9 @@ module.exports = function(app){
 
   app.get('/hiveage/newinvoice', function(req, res){
     console.log(req);
-    //hiveage.startInvoices(req);
+    // Extract company
+    // Get Invoice number
+    // Create Invoice
   });
 
 }
